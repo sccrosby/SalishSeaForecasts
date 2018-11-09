@@ -132,7 +132,8 @@ def main():
         
     SLP = read_gdps_grib(date_string, zulu_hour)
     
-    io.savemat('../PointOutputs/gdps_pressure_complete',{'slp':SLP,'lon':lon,'lat':lat,'forecast_date':date_string,'forecast_hour':zulu_hour})
+    io.savemat('{:s}/gdps_pressure_spatial'.format(fol_output),
+               {'slp':SLP,'lon':lon,'lat':lat,'forecast_date':date_string,'forecast_hour':zulu_hour})
     
     # Find closest model grid cell to ndbc
     [Lon,Lat] = np.meshgrid(lon,lat)
@@ -152,7 +153,7 @@ def main():
 #        theta[theta<0] = theta[theta<0]+360 
         
         # Save
-        outfile = '{0:s}/{1:s}_slp'.format(fol_output,pt_name[nn])
+        outfile = '{0:s}/{1:s}_gdps_slp'.format(fol_output,pt_name[nn])
         io.savemat(outfile,{'slp':slp,'date_string':date_string,'zulu_hour':zulu_hour})
     
     print 'Total time elapsed: {0:.2f} minutes'.format(((time.time() - start_time)/60.))
