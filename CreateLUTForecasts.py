@@ -211,7 +211,7 @@ def main():
     
     # Inputs+
     hrdps_loc = '../LUTinputs/BellinghamBay_wind.mat'
-    tide_loc = '../LUTinputs/bellinghambay_tide.pkl'
+    tide_loc = '../TidePredObs/9449211_pred_navd88.pkl'
     
     # Shared Inputs
     shared_loc = '/media/sf_VMShare'
@@ -228,7 +228,7 @@ def main():
     
     # Inputs
     hrdps_loc = '../LUTinputs/SkagitDelta_wind.mat'
-    tide_loc = '../LUTinputs/sneeoosh_tide.pkl'
+    tide_loc = '../TidePredObs/9448576_pred_navd88.pkl' #Sneeoosh
     
     # Shared Inputs
     shared_loc = '/media/sf_VMShare'
@@ -245,7 +245,7 @@ def main():
     
     # Inputs
     hrdps_loc = '../LUTinputs/PortSusan_wind.mat'
-    tide_loc = '../LUTinputs/portsusan_tide.pkl'
+    tide_loc = '../TidePredObs/9448043_pred_navd88.pkl' #Kayak Pt
     
     # Shared Inputs
     shared_loc = '/media/sf_VMShare'

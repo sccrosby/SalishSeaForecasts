@@ -15,10 +15,11 @@ Reads in HRDPS and extracts desired winds/pressure
 """
 import pygrib
 import numpy as np
-import time
+import time as Time
 import pickle
 from scipy import io
-
+from datetime import datetime, timedelta
+import getTideStationMeta
 
 # Location to save output
 fol_output = '../gdps/PostProcessed'
@@ -58,7 +59,7 @@ def sub2ind(array_shape, rows, cols):
     return ind
 
 def read_gdps_grib(date_string, zulu_hour):
-    
+ 
     # Initialize        
     grib_input_loc = '{0:s}/{1:s}/'.format(fol_gdps,date_string)   
               
@@ -117,18 +118,18 @@ def read_gdps_grib(date_string, zulu_hour):
 
 
 
-def main():
+def main(date_string, zulu_hour, save_str):
     # Start timer
-    start_time = time.time()
+    start_time = Time.time()
+
+            
+    # Create time vector
+    forecast_hours = range(0,243,3)
+    time0 = datetime.strptime(str(date_string).strip("'[]u"),'%Y%m%d') + timedelta(hours=int(zulu_hour))
+    time = [time0 + timedelta(hours=x) for x in forecast_hours]
+       
     
-    # Get current forecast
-    temp = pickle.load(open('current_forecast_gdps.pkl','rb'))   
-    date_string = temp[0]
-    zulu_hour = temp[1]
-    
-    pt_name = ['BellinghamBay','SkagitDelta','PortSusan']
-    pt_lon = [-122.565234, -122.512193, -122.413508]
-    pt_lat = [48.715758, 48.338880, 48.172197]
+    (sta_list, sta_id, xtide_str,mllw2navd88,sta_lat,sta_lon) = getTideStationMeta.get_all()
         
     SLP = read_gdps_grib(date_string, zulu_hour)
     
@@ -137,8 +138,8 @@ def main():
     
     # Find closest model grid cell to ndbc
     [Lon,Lat] = np.meshgrid(lon,lat)
-    for nn in range(len(pt_lon)):     
-        dist = np.add(np.square(np.array(Lon)-pt_lon[nn]),np.square(np.array(Lat)-pt_lat[nn]))
+    for sta in sta_list:     
+        dist = np.add(np.square(np.array(Lon)-sta_lon[sta]),np.square(np.array(Lat)-sta_lat[sta]))
         (I_lon, I_lat) = np.where(dist == np.min(dist))   
         
         # Extract point velocities
@@ -153,15 +154,25 @@ def main():
 #        theta[theta<0] = theta[theta<0]+360 
         
         # Save
-        outfile = '{0:s}/{1:s}_gdps_slp'.format(fol_output,pt_name[nn])
-        io.savemat(outfile,{'slp':slp,'date_string':date_string,'zulu_hour':zulu_hour})
+        outfile = '{0:s}/{1:s}{2:s}'.format(fol_output,sta_id[sta],save_str)
+        #io.savemat(outfile,{'slp':slp,'time':time,'date_string':date_string,'zulu_hour':zulu_hour})
+        with open(outfile + '.pkl','w') as f:
+            pickle.dump([time, slp, date_string, zulu_hour],f)
     
-    print 'Total time elapsed: {0:.2f} minutes'.format(((time.time() - start_time)/60.))
+    print 'Total time elapsed: {0:.2f} minutes'.format(((Time.time() - start_time)/60.))
     
 
 if __name__ == "__main__":
-    main()
+    # Get current forecast
+    temp = pickle.load(open('current_forecast_gdps.pkl','rb'))   
+    date_string = temp[0]
+    zulu_hour = temp[1]
+    main(date_string, zulu_hour, '_gdps_slp')
    
+    # Get yesterday's forecast
+    time = datetime.strptime(date_string,'%Y%m%d')
+    prior_string = datetime.strftime(time-timedelta(days=1),'%Y%m%d')
+    main(prior_string, zulu_hour, '_gdps_slp_dayold')
     
 
 

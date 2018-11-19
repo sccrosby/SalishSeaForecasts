@@ -39,6 +39,12 @@ def get_gmt_offset_2():
         GMT2PST = 7 #hr
     elif datetime(2019,3,10,2,0,0) < myTime < datetime(2019,11,3,2,0,0):
         GMT2PST = 7 #hr
+    elif datetime(2020,3,8,2,0,0) < myTime < datetime(2020,11,1,2,0,0):
+        GMT2PST = 7 #hr  
+    elif datetime(2021,3,14,2,0,0) < myTime < datetime(2021,11,7,2,0,0):
+        GMT2PST = 7 #hr        
+    elif datetime(2022,3,13,2,0,0) < myTime < datetime(2022,11,6,2,0,0):
+        GMT2PST = 7 #hr        
     else:
         GMT2PST = 8 #hr
     return GMT2PST
