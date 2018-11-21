@@ -75,7 +75,22 @@ def get_obs():
 def get_all():
     return get_meta(obs_list+pred_list)
 
+def save_csv():
+    (mylist, sta_id, xtide_str,mllw2navd88,lat,lon) = get_all()
+    import pandas as pd
+    df1 = pd.DataFrame.from_dict(sta_id,orient='index')
+    df1 = df1.rename(index=str,columns={0:'noaaID'})
+    df2 = pd.DataFrame.from_dict(lat,orient='index')
+    df2 = df2.rename(index=str,columns={0:'lat'})
+    df3 = pd.DataFrame.from_dict(lon,orient='index')
+    df3 = df3.rename(index=str,columns={0:'lon'})
+    df = pd.concat([df1,df2,df3],axis=1, join='outer')
+    df.to_csv('../PointOutputs/station_meta.csv')
 
+    
+if __name__ == "__main__":
+    save_csv()
+    
 
 
 

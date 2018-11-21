@@ -7,3 +7,5 @@ cd /home/crosby/Documents/SalishSeaForecasts
 python DownloadGDPS.py
 
 python ProcessGDPS.py
+
+python MakeWaterLevelPredictions.py
