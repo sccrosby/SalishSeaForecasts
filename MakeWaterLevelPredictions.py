@@ -112,6 +112,7 @@ for sta in sta_list:
     df = make_twl_pred_df(sta)
     df.to_csv('{:s}/{:s}_twlpred.csv'.format(fol_output,sta_id[sta]))
 
+
 # save start date for observation bounds
 start_date = datetime.strptime(df.index[0],'%Y-%m-%d %H:%M:%S')
 
@@ -122,7 +123,9 @@ for sta in sta_list:
     df.set_index('time')
     df.rename(columns={'twl':'twl obs [ft,MLLW]'})    
     df.to_csv('{:s}/{:s}_twlobs.csv'.format(fol_output,sta_id[sta]))
-
+#    ax = df.plot()
+#    fig = ax.get_figure()
+#    fig.savefig('{:s}/{:s}.png'.format(fol_output,sta_id[sta]))
 
 #import noaaTides
 #myproduct = 'hourly_height'

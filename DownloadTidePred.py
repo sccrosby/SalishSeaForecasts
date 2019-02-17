@@ -12,6 +12,7 @@ import numpy as np
 from datetime import datetime, timedelta
 import time as timeP
 import pickle
+import getTideStationMeta
     
 # Start and stop
 start = datetime(2017,1,1)
@@ -45,92 +46,38 @@ def get_gmt_offset_2():
 save_loc = '../TidePredObs'
 start_time = timeP.time()
 
-# Locations 
-sta_id = {
-        'bellingham':'9449211',
-        'sneeoosh':'9448576',
-        'kayakpoint':'9448043',
-        'nisqually':'9446828',
-        'tacoma':'9446484',
-        'seattle':'9447130',
-        'porttownsend':'9444900'}
 
-xtide_str = {
-        'bellingham':'Bellingham, Bellingham Bay, Washington',
-        'sneeoosh':'Sneeoosh Point, Washington',
-        'kayakpoint':'Kayak Point, Washington',
-        'nisqually':'Dupont Wharf, Nisqually Reach, Puget Sound, Washington',
-        'tacoma':'Tacoma, Commencement Bay, Sitcum Waterway, Puget Sound, Washington',
-        'seattle':'Seattle, Puget Sound, Washington',
-        'porttownsend':'Port Townsend (Point Hudson), Admiralty Inlet, Washington'}
-
-mllw2navd88 = {
-        'bellingham':0.161,
-        'sneeoosh':0.582,
-        'kayakpoint':0.652,
-        'nisqually':1.151,
-        'tacoma':0.729,
-        'seattle':0.865,
-        'porttownsend':0.336}
-
-method = 'xtide'
+(sta_list,sta_id,xtide_str,mllw2navd88,sta_lat,sta_lon) = getTideStationMeta.get_all()
 
 
-for loc in ['bellingham','sneeoosh','kayakpoint','nisqually','tacoma','seattle','porttownsend']:
+for loc in sta_list:
     
-    if method == 'xtide':
-        # ------------------------- GET FROM XTIDE ---------------------------------
-        # hour-by-hour tides
-        command_str = 'tide -b \"{0:s}\" -e \"{1:s}\" -l \"{2:s}\" -z -mr -um -s 01:00'.\
-            format( datetime.strftime(start,"%Y-%m-%d %H:%M"), datetime.strftime(stop,"%Y-%m-%d %H:%M"), xtide_str[loc] )
-                
-        tides_str = subprocess.check_output(command_str, shell=True)
-        tide_raw = tides_str.split()
-        Ntides = len(tide_raw) # combined number of dates and elevations
-        
-        tide = np.empty(Ntides/2, dtype='d')
-        time_epoch = np.empty(Ntides/2, dtype='d')
-        for tt in range(Ntides/2):
-            time_epoch[tt] = tide_raw[2*tt]
-            tide[tt] = tide_raw[2*tt-1]
-        
-        # Convert EPOCH time stamp to datetime
-        time = [datetime.fromtimestamp(tt) for tt in time_epoch]
+    # ------------------------- GET FROM XTIDE ---------------------------------
+    # hour-by-hour tides
+    command_str = 'tide -b \"{0:s}\" -e \"{1:s}\" -l \"{2:s}\" -z -mr -um -s 01:00'.\
+        format( datetime.strftime(start,"%Y-%m-%d %H:%M"), datetime.strftime(stop,"%Y-%m-%d %H:%M"), xtide_str[loc] )
+            
+    tides_str = subprocess.check_output(command_str, shell=True)
+    tide_raw = tides_str.split()
+    Ntides = len(tide_raw) # combined number of dates and elevations
     
-    elif method == 'noaa':
-        #--------------------------GET FROM NOAA --------------------------------   
-           
-        # Build NOAA URLs     
-        interval = 'h' # 'h' - hour, '6'- 6 minutes
-        url1 = 'https://tidesandcurrents.noaa.gov/cgi-bin/predictiondownload.cgi?&stnid={:s}'.format(sta_id)
-        url2 = '&threshold=&thresholdDirection=&bdate={:s}&edate={:s}&'.format(start.strftime('%Y%m%d'),stop.strftime('%Y%m%d'))
-        url3 = 'units=metric&timezone=GMT&datum=MLLW&interval={:s}&clock=12hour&type=txt&annual=false'.format(interval)       
-        url = url1 + url2 + url3
-        
-        # Download File to string
-        aResp = urllib2.urlopen(url)
-        web_pg = aResp.read()
-        
-        # Parse Data
-        count = 0 
-        tdate = []
-        tide = []
-        for m in web_pg.splitlines():
-            count += 1
-            if count > 14: # Skip header lines
-                temp = m.split('\t')
-                tdate.append(datetime.strptime(temp[0]+temp[2],'%Y/%m/%d%I:%M %p'))
-                tide.append(float(temp[3]))
+    tide = np.empty(Ntides/2, dtype='d')
+    time_epoch = np.empty(Ntides/2, dtype='d')
+    for tt in range(Ntides/2):
+        time_epoch[tt] = tide_raw[2*tt]
+        tide[tt] = tide_raw[2*tt-1]
     
-    else:
-        raise ValueError('no method specificed')
+    # Convert EPOCH time stamp to datetime
+    time = [datetime.fromtimestamp(tt) for tt in time_epoch]
+
+
     
     
     # Convert from MLLW to NAVD88
     tide = [tt-mllw2navd88[loc] for tt in tide]
     
     # Convert from Local to UTC
-    pst2gmt = op_functions.get_gmt_offset_2()
+    pst2gmt = get_gmt_offset_2()
     time = [tt+timedelta(hours=pst2gmt) for tt in time]
     
     # Save

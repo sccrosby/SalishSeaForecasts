@@ -69,51 +69,20 @@ def read_gdps_grib(date_string, zulu_hour):
     SLP = np.zeros([Ny,Nx,num_forecast_hours])
     for hh in range(num_forecast_hours):
         #Input grib file names            
-        #UwindFileName = '{0:s}{1:s}{2:s}{3:02d}_P{4:03d}.grib2'.format(grib_input_loc, hrdps_PrefixU, date_string, zulu_hour, hour)
-        #VwindFileName = '{0:s}{1:s}{2:s}{3:02d}_P{4:03d}.grib2'.format(grib_input_loc, hrdps_PrefixV, date_string, zulu_hour, hour)
         PresFileName = '{0:s}{1:s}{2:s}{3:02d}_P{4:03d}.grib2'.format(grib_input_loc, gdps_PrefixP, date_string, zulu_hour, forecast_hours[hh])
         
         # Open grib
-#        grbsu = pygrib.open(UwindFileName)
-#        grbu  = grbsu.select(name='10 metre U wind component')[0]
-#        grbsv = pygrib.open(VwindFileName)
-#        grbv  = grbsv.select(name='10 metre V wind component')[0]
-        grbsv = pygrib.open(PresFileName)
-        grbp  = grbsv.select(name='Pressure reduced to MSL')[0]
+        try:
+            grbsv = pygrib.open(PresFileName)
+            grbp  = grbsv.select(name='Pressure reduced to MSL')[0]
+            slp = grbp.values
+            slp = np.asarray(slp)
+            slp = slp[ind_lat,:]
+            slp = slp[:,ind_lon]
+            SLP[:,:,hh] = slp      
+        except:
+            print 'a'
         
-#        u10 = grbu.values # same as grb['values']
-#        v10 = grbv.values
-        slp = grbp.values
-#        u10 = np.asarray(u10)
-#        v10 = np.asarray(v10)
-        slp = np.asarray(slp)
-        slp = slp[ind_lat,:]
-        slp = slp[:,ind_lon]
-        
-        
-        # Crop
-        #u10 = u10[bounds[0,1]:bounds[1,1], bounds[0,0]:bounds[1,0]]
-        #v10 = v10[bounds[0,1]:bounds[1,1], bounds[0,0]:bounds[1,0]]
-        
-        
-        # Rotate to earth relative with Bert-Derived rotations based on grid poitns (increased accuracy was derived for grid locations)
-#        for j in range(Nyr):
-#            for i in range(Nxr):
-#                R = np.matrix([ [np.cos(Theta[j,i]), -np.sin(Theta[j,i])], [np.sin(Theta[j,i]), np.cos(Theta[j,i])] ])
-#                rot = R.dot([u10[j,i],v10[j,i]])
-#                u10[j,i] = rot[0,0]
-#                v10[j,i] = rot[0,1]
-
-        #u10 = np.multiply(np.cos(Theta),u10) + np.multiply(-np.sin(Theta),v10)
-        #v10 = np.multiply(np.sin(Theta),u10) + np.multiply(np.cos(Theta),v10)
-                  
-        
-        # Save all varaibles into list of arrays        
-        #U10[:,:,hour] = u10
-        #V10[:,:,hour] = v10
-        SLP[:,:,hh] = slp
-    
-    
     return SLP
 
 

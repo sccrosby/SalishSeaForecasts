@@ -12,5 +12,7 @@ python CreateLUTForecasts.py
 
 python PlotWindWave.py
 
+python MakeWindValidation.py
+
 python UploadToWWU.py
 

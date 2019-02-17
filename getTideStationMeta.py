@@ -16,7 +16,8 @@ Lsta_id = {
         'nisqually':'9446828',
         'tacoma':'9446484',
         'seattle':'9447130',
-        'porttownsend':'9444900'}
+        'porttownsend':'9444900',
+        'cherrypoint':'9449424'}
 
 Lxtide_str = {
         'bellingham':'Bellingham, Bellingham Bay, Washington',
@@ -25,7 +26,8 @@ Lxtide_str = {
         'nisqually':'Dupont Wharf, Nisqually Reach, Puget Sound, Washington',
         'tacoma':'Tacoma, Commencement Bay, Sitcum Waterway, Puget Sound, Washington',
         'seattle':'Seattle, Puget Sound, Washington',
-        'porttownsend':'Port Townsend (Point Hudson), Admiralty Inlet, Washington'}
+        'porttownsend':'Port Townsend (Point Hudson), Admiralty Inlet, Washington',
+        'cherrypoint':'Cherry Point, Strait of Georgia, Washington'}
 
 Lmllw2navd88 = {
         'bellingham':0.161,
@@ -34,7 +36,8 @@ Lmllw2navd88 = {
         'nisqually':1.151,
         'tacoma':0.729,
         'seattle':0.865,
-        'porttownsend':0.336}
+        'porttownsend':0.336,
+        'cherrypoint':0.271}
 
 Llat = {
         'bellingham':48+44.7/60,
@@ -43,7 +46,8 @@ Llat = {
         'nisqually':47.1183,
         'tacoma':47.2667,
         'seattle':47.6206,
-        'porttownsend':48.1129}
+        'porttownsend':48.1129,
+        'cherrypoint':48+51.8/60}
 
 Llon = {
         'bellingham':-122-29.7/60,
@@ -52,11 +56,12 @@ Llon = {
         'nisqually':-122.6650,
         'tacoma':-122.4133,
         'seattle':-122.3393,
-        'porttownsend':-122.7595}
+        'porttownsend':-122.7595,
+        'cherrypoint':-122-45.5/60}
 
 
 pred_list = ['bellingham','sneeoosh','kayakpoint','nisqually']
-obs_list = ['tacoma','seattle','porttownsend']
+obs_list = ['tacoma','seattle','porttownsend','cherrypoint']
 
 def get_meta(mylist):
     sta_id = dict((k,Lsta_id[k]) for k in mylist)
@@ -85,7 +90,7 @@ def save_csv():
     df3 = pd.DataFrame.from_dict(lon,orient='index')
     df3 = df3.rename(index=str,columns={0:'lon'})
     df = pd.concat([df1,df2,df3],axis=1, join='outer')
-    df.to_csv('../PointOutputs/station_meta.csv')
+    df.to_csv('../PointOutputs/tide_station_meta.csv')
 
     
 if __name__ == "__main__":

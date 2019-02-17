@@ -11,6 +11,8 @@ import time
 import pickle
 from scipy import io
 from pyproj import Proj
+from datetime import datetime, timedelta
+import getWindStationMeta
 
 # Location to save output
 fol_output = '../LUTinputs'
@@ -135,24 +137,26 @@ def load_rotations(hrdps_rotation_file,Ny,Nx):
     return Theta
 
 
-def main():
-    # Start timer
-    start_time = time.time()
-    
-    # Get current forecast
-    temp = pickle.load(open('current_forecast.pkl','rb'))   
-    date_string = temp[0]
-    zulu_hour = temp[1]
-    
+def main(date_string, zulu_hour, save_str):
+    # List of SWAN domains to save winds for (centered location in domain)
     pt_name = ['BellinghamBay','SkagitDelta','PortSusan']
     pt_lon = [-122.565234, -122.512193, -122.413508]
     pt_lat = [48.715758, 48.338880, 48.172197]
-        
+    
+    # Load list of wind validation locations
+    (windlist, wind_id, wind_lat, wind_lon) = getWindStationMeta.get_obs()
+    
+    pt_name = pt_name + [wind_id[x] for x in windlist]
+    pt_lon = pt_lon + [wind_lon[x] for x in windlist]
+    pt_lat = pt_lat + [wind_lat[x] for x in windlist]
+    
+    
     (Lon, Lat, U10, V10, SLP) = read_hrdps_grib(date_string, zulu_hour)
     
-    io.savemat('LUToutputs/hrdps_complete_wind_pressure',{'u':U10,'v':V10,'slp':SLP,'lon':Lon,'lat':Lat,'forecast_date':date_string,'forecast_hour':zulu_hour})
+    # Save whole field for larger wind plot
+    io.savemat('../LUToutputs/hrdps_complete_{:s}'.format(save_str),{'u':U10,'v':V10,'slp':SLP,'lon':Lon,'lat':Lat,'forecast_date':date_string,'forecast_hour':zulu_hour})
     
-    # Find closest model grid cell to ndbc
+    # Find closest model grid cell 
     for nn in range(len(pt_lon)):     
         dist = np.add(np.square(np.array(Lon)-pt_lon[nn]),np.square(np.array(Lat)-pt_lat[nn]))
         (I_lon, I_lat) = np.where(dist == np.min(dist))   
@@ -169,14 +173,31 @@ def main():
         theta[theta<0] = theta[theta<0]+360 
         
         # Save
-        outfile = '{0:s}/{1:s}_wind'.format(fol_output,pt_name[nn])
+        outfile = '{0:s}/{1:s}_{2:s}'.format(fol_output,pt_name[nn],save_str)
         io.savemat(outfile,{'u':u,'theta':theta,'slp':slp,'date_string':date_string,'zulu_hour':zulu_hour})
+    
+
+
+if __name__ == "__main__":
+        # Start timer
+    start_time = time.time()
+    
+    # Get current forecast
+    temp = pickle.load(open('current_forecast.pkl','rb'))   
+    date_string = temp[0]
+    zulu_hour = temp[1]
+    
+    save_str = 'wind'
+    main(date_string, zulu_hour, save_str)
     
     print 'Total time elapsed: {0:.2f} minutes'.format(((time.time() - start_time)/60.))
     
-
-if __name__ == "__main__":
-    main()
+    for ii in range(1):
+        time = datetime.strptime(date_string,'%Y%m%d')
+        date_string = datetime.strftime(time-timedelta(days=1),'%Y%m%d')
+        
+        save_str = '{:d}dayold'.format(ii+1)
+        main(date_string, zulu_hour, save_str)
    
     
 

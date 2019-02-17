@@ -9,3 +9,5 @@ python DownloadGDPS.py
 python ProcessGDPS.py
 
 python MakeWaterLevelPredictions.py
+
+python PlotWaterLevels.py
