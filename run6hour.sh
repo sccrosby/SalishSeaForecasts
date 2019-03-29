@@ -14,5 +14,9 @@ python PlotWindWave.py
 
 python MakeWindValidation.py
 
+python DownloadWW3.py
+
+python MakeSwellForecast.py
+
 python UploadToWWU.py
 

@@ -41,7 +41,7 @@ Lmllw2navd88 = {
 
 Llat = {
         'bellingham':48+44.7/60,
-        'sneeoosh':48+24/60,
+        'sneeoosh':48+24.0/60,
         'kayakpoint':48+8.2/60,
         'nisqually':47.1183,
         'tacoma':47.2667,
@@ -51,8 +51,8 @@ Llat = {
 
 Llon = {
         'bellingham':-122-29.7/60,
-        'sneeoosh':-122-32.9,
-        'kayakpoint':-122-22/60,
+        'sneeoosh':-122-32.9/60,
+        'kayakpoint':-122-22.0/60,
         'nisqually':-122.6650,
         'tacoma':-122.4133,
         'seattle':-122.3393,

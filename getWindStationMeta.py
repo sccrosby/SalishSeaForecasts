@@ -46,7 +46,7 @@ Llon = {
         'fridayharbor':-123-0.8/60,
         'neahbay':-124-36.1/60,
         'westport':-124-6.3/60,
-        'tokepoint':-123-58/60,
+        'tokepoint':-123-58.0/60,
         'portangeles':-123-26.5/60,
         'lapush':-124-38.2/60}
 

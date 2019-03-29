@@ -18,6 +18,7 @@ import numpy as np
 import math
 from datetime import datetime
 import time
+import getwaveLUTmeta
 
 save_loc = '../LUToutputs'
 
@@ -121,6 +122,7 @@ def save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,
     lat_bounds = [min(lat), max(lat)]
     lon_bounds = [min(lon), max(lon)]
     
+    
     # Get row and column bounds 
     (row_l,row_u,col_l,col_u) = get_bounds(mymask,lat,lon)
     
@@ -193,10 +195,15 @@ def save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,
     swan_lat = swan_lat[row_l:row_u,col_l:col_u]
     swan_lon = swan_lon[row_l:row_u,col_l:col_u]
     
-    io.savemat(save_loc + '/' + model_name  + '.mat',{'hs':hs,'dp':dp,'tm':tm,
+    
+    io.savemat('{:s}/{:s}Wave.mat'.format(save_loc,model_name),{'hs':hs,'dp':dp,'tm':tm,
         'lat':swan_lat,'lon':swan_lon,'lat_limits':lat_bounds,'lon_limits':lon_bounds,
         'lat_boundary':lat,'lon_boundary':lon})    
 
+    # Also save bounds for manifest file
+    with open('{:s}/{:s}_bounds.txt'.format(save_loc,model_name),'w') as file:
+        file.write('{:10.6f},{:10.6f}\n'.format(lat_bounds[0],lon_bounds[0]))
+        file.write('{:10.6f},{:10.6f}\n'.format(lat_bounds[1],lon_bounds[1]))
 
 def main():    
     startTime = time.time()
@@ -206,56 +213,64 @@ def main():
     date_string = temp[0]
     zulu_hour = temp[1]
     
-    #-------------------- Bellingham Bay ----------------------------
-    model_name = 'bellingham'
+    # Loop over LUT domains
+    N = getwaveLUTmeta.getN()
+    for nn in range(N):
+        (model_name, hrdps_loc, tide_loc, shared_loc, lut_loc, lut_prefix, mask_loc) = getwaveLUTmeta.get_lut_meta(nn)        
+        print 'Starting {:s} LUT forecast'.format(model_name)
+        save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,lut_prefix,date_string,zulu_hour)
+        
     
-    # Inputs+
-    hrdps_loc = '../LUTinputs/BellinghamBay_wind.mat'
-    tide_loc = '../TidePredObs/9449211_pred_navd88.pkl'
-    
-    # Shared Inputs
-    shared_loc = '/media/sf_VMShare'
-    lut_loc = shared_loc + '/SalishSeaLUT/RES1'
-    lut_prefix = 'SpatialJDF'
-    mask_loc = shared_loc + '/OperationalMasks/BellinghamBay.kml'
-
-    # Create and save the spatial wave forecast
-    save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,lut_prefix,date_string,zulu_hour)
-    #----------------------------------------------------------------
-
-    #-------------------- Skagit ----------------------------
-    model_name = 'skagit'
-    
-    # Inputs
-    hrdps_loc = '../LUTinputs/SkagitDelta_wind.mat'
-    tide_loc = '../TidePredObs/9448576_pred_navd88.pkl' #Sneeoosh
-    
-    # Shared Inputs
-    shared_loc = '/media/sf_VMShare'
-    lut_loc = shared_loc + '/SalishSeaLUT/RES2'
-    lut_prefix = 'SpatialPS'
-    mask_loc = shared_loc + '/OperationalMasks/Skagit.kml'
-
-    # Create and save the spatial wave forecast
-    save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,lut_prefix,date_string,zulu_hour)
-    #----------------------------------------------------------------
-
-    #-------------------- Port Susan Bay ----------------------------
-    model_name = 'portsusan'
-    
-    # Inputs
-    hrdps_loc = '../LUTinputs/PortSusan_wind.mat'
-    tide_loc = '../TidePredObs/9448043_pred_navd88.pkl' #Kayak Pt
-    
-    # Shared Inputs
-    shared_loc = '/media/sf_VMShare'
-    lut_loc = shared_loc + '/SalishSeaLUT/RES2'
-    lut_prefix = 'SpatialPS'
-    mask_loc = shared_loc + '/OperationalMasks/PortSusan.kml'
-
-    # Create and save the spatial wave forecast
-    save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,lut_prefix,date_string,zulu_hour)
-    #----------------------------------------------------------------
+#    #-------------------- Bellingham Bay ----------------------------
+#    model_name = 'bellingham'
+#    
+#    # Inputs+
+#    hrdps_loc = '../LUTinputs/BellinghamBay_wind.mat'
+#    tide_loc = '../TidePredObs/9449211_pred_navd88.pkl'
+#    
+#    # Shared Inputs
+#    shared_loc = '/media/sf_VMShare'
+#    lut_loc = shared_loc + '/SalishSeaLUT/RES1'
+#    lut_prefix = 'SpatialJDF'
+#    mask_loc = shared_loc + '/OperationalMasks/BellinghamBay.kml'
+#
+#    # Create and save the spatial wave forecast
+#    save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,lut_prefix,date_string,zulu_hour)
+#    #----------------------------------------------------------------
+#
+#    #-------------------- Skagit ----------------------------
+#    model_name = 'skagit'
+#    
+#    # Inputs
+#    hrdps_loc = '../LUTinputs/SkagitDelta_wind.mat'
+#    tide_loc = '../TidePredObs/9448576_pred_navd88.pkl' #Sneeoosh
+#    
+#    # Shared Inputs
+#    shared_loc = '/media/sf_VMShare'
+#    lut_loc = shared_loc + '/SalishSeaLUT/RES2'
+#    lut_prefix = 'SpatialPS'
+#    mask_loc = shared_loc + '/OperationalMasks/Skagit.kml'
+#
+#    # Create and save the spatial wave forecast
+#    save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,lut_prefix,date_string,zulu_hour)
+#    #----------------------------------------------------------------
+#
+#    #-------------------- Port Susan Bay ----------------------------
+#    model_name = 'portsusan'
+#    
+#    # Inputs
+#    hrdps_loc = '../LUTinputs/PortSusan_wind.mat'
+#    tide_loc = '../TidePredObs/9448043_pred_navd88.pkl' #Kayak Pt
+#    
+#    # Shared Inputs
+#    shared_loc = '/media/sf_VMShare'
+#    lut_loc = shared_loc + '/SalishSeaLUT/RES2'
+#    lut_prefix = 'SpatialPS'
+#    mask_loc = shared_loc + '/OperationalMasks/PortSusan.kml'
+#
+#    # Create and save the spatial wave forecast
+#    save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,lut_prefix,date_string,zulu_hour)
+#    #----------------------------------------------------------------
 
     print 'Total time elapsed: {0:.2f} minutes'.format(((time.time() - startTime)/60.))
     
