@@ -1,0 +1,27 @@
+import requests
+import json
+
+api_token = '2f5227322c31f12f64f89f8d7355d2b8'
+cityIDs = {'bellingham':'5786899','friday':'5795104','arlington':'5785868','mountvernon':'5804127','pointroberts':'5807107'}
+
+def getRecent(cityID,api_token):
+    url = 'http://api.openweathermap.org/data/2.5/weather?id={:s}&APPID={:s}&units=imperial'.format(cityID,api_token)
+    response = requests.get(url)
+    data = response.json()
+    return data
+
+def getGradient(c1,c2):
+    d1 = getRecent(cityIDs[c1],api_token)
+    d2 = getRecent(cityIDs[c2],api_token)
+    pgrad = d1['main']['pressure'] - d2['main']['pressure']
+    return pgrad
+
+c1 = 'friday'
+c2 = 'arlington'
+pgrad = getGradient(c1,c2)        
+print('{:s} to {:s} P-Grad = {:d} hPa'.format(c1,c2,pgrad))
+
+c1 = 'bellingham'
+c2 = 'arlington'
+pgrad = getGradient(c1,c2)        
+print('{:s} to {:s} P-Grad = {:d} hPa'.format(c1,c2,pgrad))
