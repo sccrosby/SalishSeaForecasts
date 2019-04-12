@@ -18,7 +18,7 @@ def run_scrub():
     now = datetime.utcnow()
 
     # Data storage folder
-    fol_name = '../sailflow/{:s}/'.format(now.strftime('%Y%m'))
+    fol_name = '../sailflow/{:s}/'.format(now.strftime('%Y%m%d'))
 
     # Make folder if doesn't yet exist
     if not os.path.exists(fol_name):

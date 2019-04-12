@@ -4,5 +4,5 @@ PATH=/home/crosby/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/
 
 cd /home/crosby/Documents/SalishSeaForecasts
 
-python scrub_davis_met.py
+python scrub_sailflow.py
 
