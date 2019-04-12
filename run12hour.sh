@@ -11,3 +11,5 @@ python ProcessGDPS.py
 python MakeWaterLevelPredictions.py
 
 python PlotWaterLevels.py
+
+python scrub_sailflow.py
