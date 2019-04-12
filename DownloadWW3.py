@@ -25,8 +25,8 @@ def grabFile(ftp_fol,ftp_file,out_fol):
 noaa_id = '46087' # Neah Bay
 
 # Create Locations and current time
-hours_back = 6 # Give time for WW3 forecast to run/post
-nowUTC = datetime.utcnow()-timedelta(hours=6)
+hours_back = 12 # Give time for WW3 forecast to run/post
+nowUTC = datetime.utcnow()-timedelta(hours=hours_back)
 dateString = nowUTC.strftime('%Y%m%d')
 zulu_hour = int(math.floor((nowUTC.hour)/6.0)*6)
 
