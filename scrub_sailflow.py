@@ -39,14 +39,13 @@ def run_scrub():
             uniqueID = station_data[key]
             try:
                 data = sailflow_scrubber(uniqueID)
-                dk = list(data.keys())
                 f.writelines('{},{},{},{},{},{},{},{},{}\n'.format(
-                    key, uniqueID, data[dk[5]], data[dk[6]],
-                    data[dk[2]], data[dk[3]], data[dk[1]], data[dk[0]],
-                    data[dk[4]]))
+                    key, uniqueID, data['lat'], data['lon'],
+                    data['spd'], data['gust'], data['wnddir'], data['slp'],
+                    data['timestamp']))
             except:
                 #alert = 'weatherlink_scrubber failed on station {:s}'.format(tempName)
-                #send_email_text.send_email('nathan.vanarendonk@gmail.com', alert)
+                #send_email_text.send_email('SayNoToMtBakerEruptions@gmail.com', alert)
                 #print(key)
                 nate = ''
     f.close()
@@ -105,20 +104,6 @@ def sailflow_scrubber(station_id):
     else:
         timestamp = 'NaN'
 
-    # [0] = timestamp
-    # [1] = string of current conditions
-    # [2] = current wind speed in kph
-    # [3] = 'dummy'
-    # [4] = gust speed
-    # [5] = wind direction
-    # [6] = string wind direction
-    # [7] = ?
-    # [8 - 10] = dummy
-    # [11] = sea level pressure
-    # [12] = timestamp
-    # [13 - 15] = dummy
-
-
     # Get Lat Lon values
     # Find all of the " " inds which will be for lat lon info
     quo_inds = [m.start() for m in re.finditer('"', currentCond)]
@@ -153,7 +138,7 @@ if __name__ == '__main__':
         run_scrub()
     except:
         alert = 'run_scrub() failed for unknown reason'
-        # send_email_text.send_email('schcrosby@gmail.com', alert)
+        # send_email_text.send_email('TidesAreFakeNews@gmail.com', alert)
         raise Exception(alert)
 
 
