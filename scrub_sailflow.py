@@ -28,7 +28,7 @@ def run_scrub():
     file_name = 'sailFlowPS_{:s}'.format(now.strftime('%Y%m%d_%H%M'))
 
     # Read in Station Names
-    station_data = read_station_csv('sailflow_station_list.csv')
+    station_data = read_station_csv('sailflow_stations_long.csv')
 
 
     # Loop through each station and write data from scrub to a csv file
