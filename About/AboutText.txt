@@ -1,0 +1,17 @@
+About: Real-time wave and water level predictions are generated as part of the U. S. Geological Survey's (USGS) Puget Sound Coastal Storm Monitoring System (PS-COSMOS). Through a cooperative agreement with Western Washington University, computer science undergraduates have created a dynamic visualization of real-time model predictions. These are served here by Western Washington University.
+
+Model Details: Meterological inputs from Environment Canada's HRDPS West coast model are used to drive wave predictions with the phase-average model, SWAN (Simulationg WAves Neashore) for the next 48-hours. NOAA tidal observations and predictions are used at several locations for both wave and water level modeling. Long-term pressure predictions from Environment Canada's GDPS model are used to drive storm surge water level estimates up to 1-week in advance.
+
+Visulation Details: ...
+
+Contact us at:
+Sean C. Crosby
+sean.crosby@wwu.edu
+Eric E. Grossman
+egrossman@usgs.gov
+
+WWU CS student development team, 2019
+Caleb Ouellette
+Cristina Feliberti
+Gun-Oh Jung
+Natasah Ng

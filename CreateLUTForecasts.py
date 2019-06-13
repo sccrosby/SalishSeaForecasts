@@ -216,7 +216,7 @@ def main():
     # Loop over LUT domains
     N = getwaveLUTmeta.getN()
     for nn in range(N):
-        (model_name, hrdps_loc, tide_loc, shared_loc, lut_loc, lut_prefix, mask_loc) = getwaveLUTmeta.get_lut_meta(nn)        
+        (model_name, hrdps_loc, tide_loc, shared_loc, lut_loc, lut_prefix, mask_loc, lat, lon) = getwaveLUTmeta.get_lut_meta(nn)        
         print 'Starting {:s} LUT forecast'.format(model_name)
         save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,lut_prefix,date_string,zulu_hour)
         

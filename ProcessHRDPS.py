@@ -13,6 +13,7 @@ from scipy import io
 from pyproj import Proj
 from datetime import datetime, timedelta
 import getWindStationMeta
+import getwaveLUTmeta
 
 # Location to save output
 fol_output = '../LUTinputs'
@@ -138,12 +139,18 @@ def load_rotations(hrdps_rotation_file,Ny,Nx):
 
 
 def main(date_string, zulu_hour, save_str):
-    # List of SWAN domains to save winds for (centered location in domain)
-    pt_name = ['BellinghamBay','SkagitDelta','PortSusan']
-    pt_lon = [-122.565234, -122.512193, -122.413508]
-    pt_lat = [48.715758, 48.338880, 48.172197]
-    
-    # Load list of wind validation locations
+    # List of SWAN domains to save winds for in middel of domain    
+    Nw = getwaveLUTmeta.getN()
+    pt_name = []
+    pt_lon = []
+    pt_lat = []
+    for ii in range(Nw):
+        (model_name, hrdps_loc, tide_loc, shared_loc, lut_loc, lut_prefix, mask_loc, lat, lon) = getwaveLUTmeta.get_lut_meta(ii)
+        pt_name.append(model_name)
+        pt_lon.append(lon)
+        pt_lat.append(lat)
+            
+    # Load list of wind validation locations for time plots
     (windlist, wind_id, wind_lat, wind_lon) = getWindStationMeta.get_obs()
     
     pt_name = pt_name + [wind_id[x] for x in windlist]
@@ -179,7 +186,7 @@ def main(date_string, zulu_hour, save_str):
 
 
 if __name__ == "__main__":
-        # Start timer
+    # Start timer
     start_time = time.time()
     
     # Get current forecast
@@ -187,11 +194,13 @@ if __name__ == "__main__":
     date_string = temp[0]
     zulu_hour = temp[1]
     
+    # Process current forecast
     save_str = 'wind'
     main(date_string, zulu_hour, save_str)
     
     print 'Total time elapsed: {0:.2f} minutes'.format(((time.time() - start_time)/60.))
     
+    # Re-process older forecasts
     for ii in range(1):
         time = datetime.strptime(date_string,'%Y%m%d')
         date_string = datetime.strftime(time-timedelta(days=1),'%Y%m%d')
