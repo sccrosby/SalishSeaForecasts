@@ -12,6 +12,8 @@ To install pkml, pip install pykml
 
 from pykml import parser 
 from scipy import io
+from scipy.interpolate import griddata 
+
 from matplotlib import path
 import pickle
 import numpy as np
@@ -52,6 +54,14 @@ def get_bounds(mask,lat,lon):
         test = max(mask[:,col_u])
         
     return (row_l,row_u,col_l,col_u)
+
+def regrid(x,y,z,x2,y2):
+    ind = np.isnan(x)   
+    x = x[~ind]
+    y = y[~ind]
+    z = z[~ind]
+    z2 = griddata((x, y), z, (x2,y2), method='linear' )
+    return z2
 
 def read_kml(kml_file):
     root = parser.fromstring(open(kml_file,'r').read())
@@ -121,8 +131,7 @@ def save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,
     mymask = mymask.reshape(Nx,Ny)
     lat_bounds = [min(lat), max(lat)]
     lon_bounds = [min(lon), max(lon)]
-    
-    
+     
     # Get row and column bounds 
     (row_l,row_u,col_l,col_u) = get_bounds(mymask,lat,lon)
     
@@ -195,6 +204,34 @@ def save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,
     swan_lat = swan_lat[row_l:row_u,col_l:col_u]
     swan_lon = swan_lon[row_l:row_u,col_l:col_u]
     
+    # Grid onto a new grid without missing lat,lon values
+    dx = 0.001
+    dy = 0.001*.7
+    new_lon = np.arange(np.nanmin(swan_lon),np.nanmax(swan_lon),dx)
+    new_lat = np.arange(np.nanmin(swan_lat),np.nanmax(swan_lat),dy)
+    new_Lon, new_Lat = np.meshgrid(new_lon,new_lat)
+    (Nx2,Ny2) = new_Lon.shape
+    new_hs = np.zeros((Nx2,Ny2,48))
+    new_dp = np.zeros((Nx2,Ny2,48))
+    new_tm = np.zeros((Nx2,Ny2,48))
+    for fh in range(48):
+        new_hs[:,:,fh] = regrid(swan_lon.ravel(),swan_lat.ravel(),hs[:,:,fh].ravel(),new_Lon,new_Lat)
+        new_dp[:,:,fh] = regrid(swan_lon.ravel(),swan_lat.ravel(),dp[:,:,fh].ravel(),new_Lon,new_Lat)
+        new_tm[:,:,fh] = regrid(swan_lon.ravel(),swan_lat.ravel(),dp[:,:,fh].ravel(),new_Lon,new_Lat)
+    
+    
+#    import matplotlib.pyplot as plt
+#    plt.subplot(211)
+#    plt.pcolor(swan_lon,swan_lat,hs[:,:,0])
+#    plt.subplot(212)
+#    plt.pcolor(new_Lon,new_Lat,new_hs[:,:,0])
+        
+    # Save re-gridded data
+    swan_lat = new_lat
+    swan_lon = new_lon
+    hs = new_hs
+    dp = new_dp
+    tm = new_tm    
     
     io.savemat('{:s}/{:s}Wave.mat'.format(save_loc,model_name),{'hs':hs,'dp':dp,'tm':tm,
         'lat':swan_lat,'lon':swan_lon,'lat_limits':lat_bounds,'lon_limits':lon_bounds,
