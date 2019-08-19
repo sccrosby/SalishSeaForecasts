@@ -205,8 +205,8 @@ def save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,
     swan_lon = swan_lon[row_l:row_u,col_l:col_u]
     
     # Grid onto a new grid without missing lat,lon values
-    dx = 0.001
-    dy = 0.001*.7
+    dx = 0.002
+    dy = 0.002*.7
     new_lon = np.arange(np.nanmin(swan_lon),np.nanmax(swan_lon),dx)
     new_lat = np.arange(np.nanmin(swan_lat),np.nanmax(swan_lat),dy)
     new_Lon, new_Lat = np.meshgrid(new_lon,new_lat)
@@ -227,8 +227,8 @@ def save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,
 #    plt.pcolor(new_Lon,new_Lat,new_hs[:,:,0])
         
     # Save re-gridded data
-    swan_lat = new_lat
-    swan_lon = new_lon
+    swan_lat = new_Lat
+    swan_lon = new_Lon
     hs = new_hs
     dp = new_dp
     tm = new_tm    

@@ -110,7 +110,7 @@ start_time = Time.time()
 
 for sta in sta_list:
     df = make_twl_pred_df(sta)
-    df.to_csv('{:s}/{:s}_twlpred.csv'.format(fol_output,sta_id[sta]))
+    df.to_csv('{:s}/{:s}_twl_pred.csv'.format(fol_output,sta_id[sta]))
 
 
 # save start date for observation bounds
@@ -122,7 +122,7 @@ for sta in sta_list:
     df = get_obs(sta_id[sta],start_date,datetime.utcnow())
     df.set_index('time')
     df.rename(columns={'twl':'twl obs [ft,MLLW]'})    
-    df.to_csv('{:s}/{:s}_twlobs.csv'.format(fol_output,sta_id[sta]))
+    df.to_csv('{:s}/{:s}_twl_obs.csv'.format(fol_output,sta_id[sta]))
 #    ax = df.plot()
 #    fig = ax.get_figure()
 #    fig.savefig('{:s}/{:s}.png'.format(fol_output,sta_id[sta]))
