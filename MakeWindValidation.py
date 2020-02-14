@@ -15,7 +15,7 @@ from scipy import io
 # Load list of wind validation locations
 (windlist, wind_id, wind_lat, wind_lon) = getWindStationMeta.get_obs()
 
-fol_output = '../PointOutputs'
+fol_output = '../usgstidal/data-packager/datafolder'
 fol_input = '../LUTinputs'
 
 

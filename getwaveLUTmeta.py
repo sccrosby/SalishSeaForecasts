@@ -14,7 +14,7 @@ def bellingham():
     # Bellingham
     model_name = 'bellingham'    
     # Inputs
-    hrdps_loc = '../LUTinputs/BellinghamBay_wind.mat'
+    hrdps_loc = '../LUTinputs/bellingham_wind.mat'
     tide_loc = '../TidePredObs/9449211_pred_navd88.pkl'    
     # External Inputs (LUT + masks)
     shared_loc = '/media/sf_VMShare'
@@ -28,7 +28,7 @@ def bellingham():
 def skagit():
     model_name = 'skagit'    
     # Inputs
-    hrdps_loc = '../LUTinputs/SkagitDelta_wind.mat'
+    hrdps_loc = '../LUTinputs/skagit_wind.mat'
     tide_loc = '../TidePredObs/9448576_pred_navd88.pkl' #Sneeoosh    
     # Shared Inputs
     shared_loc = '/media/sf_VMShare'
@@ -42,7 +42,7 @@ def skagit():
 def portsusan():
     model_name = 'portsusan'    
     # Inputs
-    hrdps_loc = '../LUTinputs/PortSusan_wind.mat'
+    hrdps_loc = '../LUTinputs/portsusan_wind.mat'
     tide_loc = '../TidePredObs/9448043_pred_navd88.pkl' #Kayak Pt    
     # Shared Inputs
     shared_loc = '/media/sf_VMShare'
@@ -123,6 +123,104 @@ def westcamano():
     lon = -122.579435
     return (model_name, hrdps_loc, tide_loc, shared_loc, lut_loc, lut_prefix, mask_loc, lat, lon)
 
+def caseinlet():
+    model_name = 'westcamano'    
+    # Inputs
+    hrdps_loc = '../LUTinputs/caseinlet_wind.mat'
+    tide_loc = '../TidePredObs/9446484_pred_navd88.pkl' #Tacoma
+    # Shared Inputs
+    shared_loc = '/media/sf_VMShare'
+    lut_loc = shared_loc + '/SalishSeaLUT/RES2'
+    lut_prefix = 'SpatialPS'
+    mask_loc = shared_loc + '/OperationalMasks/LUT_domains/westcamano.kml'
+    lat = 47.283341
+    lon = -122.838442
+    return (model_name, hrdps_loc, tide_loc, shared_loc, lut_loc, lut_prefix, mask_loc, lat, lon)
+
+def southhood():
+    model_name = 'southhood'    
+    # Inputs
+    hrdps_loc = '../LUTinputs/southhood_wind.mat'
+    tide_loc = '../TidePredObs/9444900_pred_navd88.pkl' #Porttownsend  
+    # Shared Inputs
+    shared_loc = '/media/sf_VMShare'
+    lut_loc = shared_loc + '/SalishSeaLUT/RES2'
+    lut_prefix = 'SpatialPS'
+    mask_loc = shared_loc + '/OperationalMasks/LUT_domains/southhood.kml'
+    lat = 47.436116
+    lon = -123.104426
+    return (model_name, hrdps_loc, tide_loc, shared_loc, lut_loc, lut_prefix, mask_loc, lat, lon)
+
+def northhood():
+    model_name = 'northhood'    
+    # Inputs
+    hrdps_loc = '../LUTinputs/northhood_wind.mat'
+    tide_loc = '../TidePredObs/9444900_pred_navd88.pkl' #Porttownsend  
+    # Shared Inputs
+    shared_loc = '/media/sf_VMShare'
+    lut_loc = shared_loc + '/SalishSeaLUT/RES2'
+    lut_prefix = 'SpatialPS'
+    mask_loc = shared_loc + '/OperationalMasks/LUT_domains/northhood.kml'
+    lat = 47.690429
+    lon = -122.862342
+    return (model_name, hrdps_loc, tide_loc, shared_loc, lut_loc, lut_prefix, mask_loc, lat, lon)
+
+def carrinlet():
+    model_name = 'carrinlet'    
+    # Inputs
+    hrdps_loc = '../LUTinputs/carrinlet_wind.mat'
+    tide_loc = '../TidePredObs/9446828_pred_navd88.pkl' #Nisqually
+    # Shared Inputs
+    shared_loc = '/media/sf_VMShare'
+    lut_loc = shared_loc + '/SalishSeaLUT/RES2'
+    lut_prefix = 'SpatialPS'
+    mask_loc = shared_loc + '/OperationalMasks/LUT_domains/carrinlet.kml'
+    lat = 47.265720
+    lon = -122.704912
+    return (model_name, hrdps_loc, tide_loc, shared_loc, lut_loc, lut_prefix, mask_loc, lat, lon)
+
+def eastvashon():
+    model_name = 'eastvashon'    
+    # Inputs
+    hrdps_loc = '../LUTinputs/eastvashon_wind.mat'
+    tide_loc = '../TidePredObs/9446828_pred_navd88.pkl' #Nisqually
+    # Shared Inputs
+    shared_loc = '/media/sf_VMShare'
+    lut_loc = shared_loc + '/SalishSeaLUT/RES2'
+    lut_prefix = 'SpatialPS'
+    mask_loc = shared_loc + '/OperationalMasks/LUT_domains/eastvashon.kml'
+    lat = 47.400971
+    lon = -122.538643
+    return (model_name, hrdps_loc, tide_loc, shared_loc, lut_loc, lut_prefix, mask_loc, lat, lon)
+
+def sog():
+    model_name = 'sog'    
+    # Inputs
+    hrdps_loc = '../LUTinputs/sog_wind.mat'
+    tide_loc = '../TidePredObs/9449211_pred_navd88.pkl'    #Bellingham
+    # Shared Inputs
+    shared_loc = '/media/sf_VMShare'
+    lut_loc = shared_loc + '/SalishSeaLUT/RES2'
+    lut_prefix = 'SpatialPS'
+    mask_loc = shared_loc + '/OperationalMasks/LUT_domains/sog.kml'
+    lat = 48.884530
+    lon = -123.095271
+    return (model_name, hrdps_loc, tide_loc, shared_loc, lut_loc, lut_prefix, mask_loc, lat, lon)
+
+
+def padilla():
+    model_name = 'padilla'    
+    # Inputs
+    hrdps_loc = '../LUTinputs/padilla_wind.mat'
+    tide_loc = '../TidePredObs/9449211_pred_navd88.pkl'    #Bellingham
+    # Shared Inputs
+    shared_loc = '/media/sf_VMShare'
+    lut_loc = shared_loc + '/SalishSeaLUT/RES2'
+    lut_prefix = 'SpatialPS'
+    mask_loc = shared_loc + '/OperationalMasks/LUT_domains/padilla.kml'
+    lat = 48.543383
+    lon = -122.556331
+    return (model_name, hrdps_loc, tide_loc, shared_loc, lut_loc, lut_prefix, mask_loc, lat, lon)
 
     
 def get_lut_meta(arg):
@@ -134,7 +232,14 @@ def get_lut_meta(arg):
             4: nisqually,
             5: seattle,
             6: tacoma,
-            7: westcamano
+            7: westcamano,
+            8: caseinlet,
+            9: southhood,
+            10: northhood,
+            11: carrinlet,
+            12: eastvashon,
+            13: sog,
+            14: padilla                        
         }
     # Get the function from the switch dic 
     func = switcher.get(arg, lambda: "Invalid Model")

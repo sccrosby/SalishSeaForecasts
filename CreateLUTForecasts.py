@@ -22,7 +22,7 @@ from datetime import datetime
 import time
 import getwaveLUTmeta
 
-save_loc = '../LUToutputs'
+save_loc = '../usgstidal/data-packager/datafolder'
 
 def nearest(items, pivot):
     return min(items, key=lambda x: abs(x - pivot))
@@ -116,7 +116,7 @@ def save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,
     idx = tide[0].index(time_nearest)
     tide_forecast = tide[1][idx:idx+48]
     tide_time = tide[0][idx:idx+48]
-    
+        
     # Get lat,lon of model and create mask for domain (use arbitrary model)
     lut = io.loadmat('{:s}/{:s}_s100_d130_t-10.mat'.format(lut_loc,lut_prefix),squeeze_me=True,variable_names=['Xp','Yp'])    
     swan_lon = lut['Xp']
@@ -205,19 +205,19 @@ def save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,
     swan_lon = swan_lon[row_l:row_u,col_l:col_u]
     
     # Grid onto a new grid without missing lat,lon values
-    dx = 0.002
-    dy = 0.002*.7
-    new_lon = np.arange(np.nanmin(swan_lon),np.nanmax(swan_lon),dx)
-    new_lat = np.arange(np.nanmin(swan_lat),np.nanmax(swan_lat),dy)
-    new_Lon, new_Lat = np.meshgrid(new_lon,new_lat)
-    (Nx2,Ny2) = new_Lon.shape
-    new_hs = np.zeros((Nx2,Ny2,48))
-    new_dp = np.zeros((Nx2,Ny2,48))
-    new_tm = np.zeros((Nx2,Ny2,48))
-    for fh in range(48):
-        new_hs[:,:,fh] = regrid(swan_lon.ravel(),swan_lat.ravel(),hs[:,:,fh].ravel(),new_Lon,new_Lat)
-        new_dp[:,:,fh] = regrid(swan_lon.ravel(),swan_lat.ravel(),dp[:,:,fh].ravel(),new_Lon,new_Lat)
-        new_tm[:,:,fh] = regrid(swan_lon.ravel(),swan_lat.ravel(),dp[:,:,fh].ravel(),new_Lon,new_Lat)
+#    dx = 0.002
+#    dy = 0.002*.7
+#    new_lon = np.arange(np.nanmin(swan_lon),np.nanmax(swan_lon),dx)
+#    new_lat = np.arange(np.nanmin(swan_lat),np.nanmax(swan_lat),dy)
+#    new_Lon, new_Lat = np.meshgrid(new_lon,new_lat)
+#    (Nx2,Ny2) = new_Lon.shape
+#    new_hs = np.zeros((Nx2,Ny2,48))
+#    new_dp = np.zeros((Nx2,Ny2,48))
+#    new_tm = np.zeros((Nx2,Ny2,48))
+#    for fh in range(48):
+#        new_hs[:,:,fh] = regrid(swan_lon.ravel(),swan_lat.ravel(),hs[:,:,fh].ravel(),new_Lon,new_Lat)
+#        new_dp[:,:,fh] = regrid(swan_lon.ravel(),swan_lat.ravel(),dp[:,:,fh].ravel(),new_Lon,new_Lat)
+#        new_tm[:,:,fh] = regrid(swan_lon.ravel(),swan_lat.ravel(),dp[:,:,fh].ravel(),new_Lon,new_Lat)
     
     
 #    import matplotlib.pyplot as plt
@@ -227,11 +227,11 @@ def save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,
 #    plt.pcolor(new_Lon,new_Lat,new_hs[:,:,0])
         
     # Save re-gridded data
-    swan_lat = new_Lat
-    swan_lon = new_Lon
-    hs = new_hs
-    dp = new_dp
-    tm = new_tm    
+#    swan_lat = new_Lat
+#    swan_lon = new_Lon
+#    hs = new_hs
+#    dp = new_dp
+#    tm = new_tm    
     
     io.savemat('{:s}/{:s}Wave.mat'.format(save_loc,model_name),{'hs':hs,'dp':dp,'tm':tm,
         'lat':swan_lat,'lon':swan_lon,'lat_limits':lat_bounds,'lon_limits':lon_bounds,

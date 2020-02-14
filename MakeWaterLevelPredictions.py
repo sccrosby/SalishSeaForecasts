@@ -17,7 +17,7 @@ import os
 
 gdps_input = '../gdps/PostProcessed'
 tide_input = '../TidePredObs'
-fol_output = '../PointOutputs'
+fol_output = '../usgstidal/data-packager/datafolder'
 m2ft = 3.281
 
 def nearest(items, pivot):

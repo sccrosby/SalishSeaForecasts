@@ -20,7 +20,7 @@ cur_file = '{:s}/multi_1.46087.spec.gz'.format(fol)
 out_fol = '../ww3/processed'
 shared_loc = '/media/sf_VMShare'
 transform_loc = shared_loc + '/SwellTransforms/Transforms_alongshore.mat'
-save_loc = '../LUToutputs'
+save_loc = '../usgstidal/data-packager/datafolder'
 
 # Reads floats from lines given, skips non-floats
 def read_rows(lines,start,stop):

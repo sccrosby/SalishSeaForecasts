@@ -18,5 +18,6 @@ python DownloadWW3.py
 
 python MakeSwellForecast.py
 
-python UploadToWWU.py
+python3 Update_manifest.py
 
+python3 /home/crosby/Documents/usgstidal/data-packager/app.py /home/crosby/Documents/usgstidal/data-packager/datafolder
