@@ -20,6 +20,7 @@ import numpy as np
 import math
 from datetime import datetime
 import time
+import csv
 import getwaveLUTmeta
 
 save_loc = '../usgstidal/data-packager/datafolder'
@@ -81,6 +82,19 @@ def read_kml(kml_file):
     lat = [float(x) for x in lat]
     return (lat,lon)
 
+def read_bnd(bnd_file):
+    lat = []
+    lon = []
+    with open(bnd_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            try:
+                lat.append(float(row[0]))
+                lon.append(float(row[1]))
+            except:
+                print('Header')    
+    return (lat,lon)
+
 def load_jdf_lut(u,d,t,Nx,Ny,lut_loc,lut_prefix):
     if u == 0:
         lut = {};
@@ -97,9 +111,9 @@ def load_jdf_lut(u,d,t,Nx,Ny,lut_loc,lut_prefix):
         lut = io.loadmat(lut_loc+'/'+fname_lut,squeeze_me=True,variable_names=['Hsig','Dir','Tm01'])     
     return lut
 
-def save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,lut_prefix,date_string,zulu_hour):
+def save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,bnd_file,lut_prefix,date_string,zulu_hour):
     # Load kml mask
-    (lat,lon) = read_kml(mask_loc)
+    (lat,lon) = read_bnd(bnd_file)
     
     # read in hrdps
     hrdps = io.loadmat(hrdps_loc)
@@ -238,9 +252,9 @@ def save_lut_forecast(model_name,hrdps_loc,tide_loc,shared_loc,lut_loc,mask_loc,
         'lat_boundary':lat,'lon_boundary':lon})    
 
     # Also save bounds for manifest file
-    with open('{:s}/{:s}_bounds.txt'.format(save_loc,model_name),'w') as file:
-        file.write('{:10.6f},{:10.6f}\n'.format(lat_bounds[0],lon_bounds[0]))
-        file.write('{:10.6f},{:10.6f}\n'.format(lat_bounds[1],lon_bounds[1]))
+    #with open('{:s}/{:s}_bounds.txt'.format(save_loc,model_name),'w') as file:
+    #    file.write('{:10.6f},{:10.6f}\n'.format(lat_bounds[0],lon_bounds[0]))
+    #    file.write('{:10.6f},{:10.6f}\n'.format(lat_bounds[1],lon_bounds[1]))
 
 def main():    
     startTime = time.time()
