@@ -1,7 +1,7 @@
 import requests
 import json
 
-api_token = '2f5227322c31f12f64f89f8d7355d2b8'
+api_token = ''
 cityIDs = {'bellingham':'5786899','friday':'5795104','arlington':'5785868','mountvernon':'5804127','pointroberts':'5807107'}
 
 def getRecent(cityID,api_token):
